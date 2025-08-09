@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PersonController extends Controller
 {
@@ -12,7 +13,7 @@ class PersonController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('person/index');
     }
 
     /**
