@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Person;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\PersonFormRequest;
 
 class PersonController extends Controller
 {
@@ -27,9 +29,39 @@ class PersonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PersonFormRequest $request)
     {
-        //
+        try {
+            $photo = null;
+
+            if ($request->file('photo')) {
+                $photo  = $request->file('photo');
+                $photoOriginalName = $photo->getClientOriginalName();
+                $photo = $photo->store('person', 'public');
+            }
+
+            $person = Person::create([
+                'name' => $request->name,
+                'address' => $request->address,
+                'city' => $request->city,
+                'state' => $request->state,
+                'zip' => $request->zip,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'birth' => $request->birth,
+                'photo' => $photoOriginalName ?? null,
+            ]);
+            if ($person) {
+                return redirect()->route('person.index')->with('success', 'Person created successfully.');
+            } else {
+                return redirect()->back()->withErrors('error', 'Failed to create person.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Person creation failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Something went wrong while creating the person.'
+            ], 500);
+        }
     }
 
     /**
