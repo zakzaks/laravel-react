@@ -21,7 +21,7 @@ class PersonController extends Controller
      */
     public function create()
     {
-        dd('Create person');
+        return Inertia::render('person/person-form');
     }
 
     /**
