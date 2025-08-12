@@ -58,9 +58,6 @@ class PersonController extends Controller
             }
         } catch (\Exception $e) {
             Log::error('Person creation failed: ' . $e->getMessage());
-            return response()->json([
-                'message' => 'Something went wrong while creating the person.'
-            ], 500);
         }
     }
 
