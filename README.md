@@ -1,4 +1,4 @@
-<h2>Laravel - React Monolith application</h2>
+<h2>Laravel - React Monolith</h2>
 
 This app built using Laravel 12 with React starter kit. This app is about managing Data Person like create, read, update, and delete (CRUD).
 
