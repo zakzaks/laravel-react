@@ -11,7 +11,23 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index() {
+export default function Index({
+    person,
+}: {
+    person: [
+        {
+            id: number;
+            name: string;
+            phone: string;
+            address: string;
+            city: string;
+            state: string;
+            zip: string;
+            gender: string;
+            photo: string;
+        },
+    ];
+}) {
     const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
     const flashMessage = flash?.success || flash?.error;
     const [showAlert, setShowAlert] = useState(flashMessage ? true : false);
@@ -51,7 +67,6 @@ export default function Index() {
                             <tr>
                                 <th className="border p-4">#</th>
                                 <th className="border p-4">Name</th>
-                                <th className="border p-4">Email</th>
                                 <th className="border p-4">Phone</th>
                                 <th className="border p-4">Address</th>
                                 <th className="border p-4">City</th>
@@ -63,19 +78,26 @@ export default function Index() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td className="border px-4 py-2 text-center">1</td>
-                                <td className="border px-4 py-2 text-center">Arief</td>
-                                <td className="border px-4 py-2 text-center">arief@example.com</td>
-                                <td className="border px-4 py-2 text-center">123-456-7890</td>
-                                <td className="border px-4 py-2 text-center">123 Main St</td>
-                                <td className="border px-4 py-2 text-center">Anytown</td>
-                                <td className="border px-4 py-2 text-center">CA</td>
-                                <td className="border px-4 py-2 text-center">12345</td>
-                                <td className="border px-4 py-2 text-center">Male</td>
-                                <td className="border px-4 py-2 text-center"></td>
-                                <td className="border px-4 py-2 text-center"></td>
-                            </tr>
+                            {person.map((p, index) => (
+                                <tr key={index}>
+                                    <td className="border px-4 py-2 text-center">{index + 1}</td>
+                                    <td className="border px-4 py-2 text-center">{p.name}</td>
+                                    <td className="border px-4 py-2 text-center">{p.phone}</td>
+                                    <td className="border px-4 py-2 text-center">{p.address}</td>
+                                    <td className="border px-4 py-2 text-center">{p.city}</td>
+                                    <td className="border px-4 py-2 text-center">{p.state}</td>
+                                    <td className="border px-4 py-2 text-center">{p.zip}</td>
+                                    <td className="border px-4 py-2 text-center">{p.gender}</td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <img src={p.photo} alt={p.name} className="h-12 w-12 rounded-full" />
+                                    </td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <Link href={route('person.edit', p.id)} className="text-blue-500 hover:underline">
+                                            Edit
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

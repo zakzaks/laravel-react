@@ -15,7 +15,10 @@ class PersonController extends Controller
      */
     public function index()
     {
-        return Inertia::render('person/index');
+        $person = Person::latest()->get();
+        return Inertia::render('person/index', [
+            'person' => $person
+        ]);
     }
 
     /**

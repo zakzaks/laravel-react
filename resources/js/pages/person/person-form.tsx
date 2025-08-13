@@ -28,7 +28,6 @@ export default function Index() {
     });
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.files);
         if (e.target.files && e.target.files.length > 0) {
             setData('photo', e.target.files[0]);
         }
@@ -37,10 +36,12 @@ export default function Index() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('person.store'), {
-            onSuccess: () => console.log('Person created successfully'),
+            onSuccess: () => {
+                reset();
+                console.log('Person created successfully');
+            },
             onError: (errors) => console.error('Error creating person', errors),
         });
-        // console.log('data', data);
     };
 
     return (
