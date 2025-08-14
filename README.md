@@ -5,7 +5,7 @@ This app built using Laravel 12 with React starter kit. This app is about managi
 <h3>How to install:</h3>
 
 - `composer install`
-- copy `.env.example` and rename it to `.env`
+- copy `.env.example` and rename into `.env`
 - generate key using `php artisan key:generate`
 - running app using `composer run dev`
 
