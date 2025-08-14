@@ -15,7 +15,18 @@ class PersonController extends Controller
      */
     public function index()
     {
-        $person = Person::latest()->get();
+        $person = Person::latest()->get()->map(fn($person) => [
+            'id' => $person->id,
+            'name' => $person->name,
+            'phone' => $person->phone,
+            'address' => $person->address,
+            'city' => $person->city,
+            'state' => $person->state,
+            'zip' => $person->zip,
+            'gender' => $person->gender,
+            'photo' => $person->photo,
+            'created_at' => $person->created_at->format('Y-m-d'),
+        ]);
         return Inertia::render('person/index', [
             'person' => $person
         ]);
@@ -69,7 +80,10 @@ class PersonController extends Controller
      */
     public function show(Person $person)
     {
-        //
+        return Inertia::render('person/person-form', [
+            'person' => $person,
+            'isView' => true
+        ]);
     }
 
     /**

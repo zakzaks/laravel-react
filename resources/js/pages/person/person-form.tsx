@@ -7,24 +7,26 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Add Person',
-        href: '/person/create',
-    },
-];
+export default function Index({ ...props }) {
+    const { person, isView, isEdit } = props;
 
-export default function Index() {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: `${isView ? 'View ' : isEdit ? 'Update' : 'Add'} Person`,
+            href: '/person/create',
+        },
+    ];
+
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        phone: '',
-        birth: '',
-        address: '',
-        city: '',
-        state: '',
-        zip: '',
-        gender: '',
-        photo: null as File | null,
+        name: person?.name || '',
+        phone: person?.phone || '',
+        birth: person?.birth || '',
+        address: person?.address || '',
+        city: person?.city || '',
+        state: person?.state || '',
+        zip: person?.zip || '',
+        gender: person?.gender || '',
+        photo: person?.photo || (null as File | null),
     });
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +48,7 @@ export default function Index() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Add Person" />
+            <Head title={`${isView ? 'View ' : isEdit ? 'Update' : 'Add'} Person`} />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="ml-auto">
                     <Link href={route('person.index')} className="self-start">
@@ -55,7 +57,7 @@ export default function Index() {
                 </div>
 
                 <Card className="flex flex-col gap-4">
-                    <CardTitle className="ml-4 text-2xl font-semibold">Add Person</CardTitle>
+                    <CardTitle className="ml-4 text-2xl font-semibold">{`${isView ? 'View ' : isEdit ? 'Update' : 'Add'} Person`}</CardTitle>
                     <CardContent className="flex flex-col gap-4">
                         <form onSubmit={handleSubmit} className="grid gap-4" autoComplete="off">
                             <div className="grid gap-2">
@@ -68,6 +70,7 @@ export default function Index() {
                                     name="name"
                                     tabIndex={1}
                                     autoFocus
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.name} />
                             </div>
@@ -80,6 +83,7 @@ export default function Index() {
                                     id="address"
                                     name="address"
                                     tabIndex={2}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.address} />
                             </div>
@@ -92,6 +96,7 @@ export default function Index() {
                                     id="city"
                                     name="city"
                                     tabIndex={3}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.city} />
                             </div>
@@ -104,6 +109,7 @@ export default function Index() {
                                     id="state"
                                     name="state"
                                     tabIndex={4}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.state} />
                             </div>
@@ -116,6 +122,7 @@ export default function Index() {
                                     id="zip"
                                     name="zip"
                                     tabIndex={5}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.zip} />
                             </div>
@@ -128,6 +135,7 @@ export default function Index() {
                                     id="phone"
                                     name="phone"
                                     tabIndex={6}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.phone} />
                             </div>
@@ -140,6 +148,7 @@ export default function Index() {
                                     id="birth"
                                     name="birth"
                                     tabIndex={7}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.birth} />
                             </div>
@@ -152,19 +161,30 @@ export default function Index() {
                                     id="gender"
                                     name="gender"
                                     tabIndex={8}
+                                    disabled={isView || processing}
                                 />
                                 <InputError message={errors.gender} />
                             </div>
-                            <div className="grid gap-4">
-                                <Label htmlFor="photo">Photo</Label>
-                                <Input onChange={handleFileUpload} type="file" id="photo" name="photo" tabIndex={8} />
-                                <InputError message={errors.photo} />
-                            </div>
-                            <div className="grid gap-4">
-                                <Button className="w-fit cursor-pointer" type="submit">
-                                    Save Person
-                                </Button>
-                            </div>
+                            {!isView ? (
+                                <div className="grid gap-4">
+                                    <Label htmlFor="photo">Photo</Label>
+                                    <Input onChange={handleFileUpload} type="file" id="photo" name="photo" tabIndex={8} />
+                                    <InputError message={errors.photo} />
+                                </div>
+                            ) : (
+                                <div className="grid gap-4">
+                                    <Label htmlFor="photo">Photo</Label>
+                                    <img src={`/storage/person/${data.photo}`} alt={data.name} className="h-32 w-32 object-cover" />
+                                </div>
+                            )}
+
+                            {!isView && (
+                                <div className="grid gap-4">
+                                    <Button className="w-fit cursor-pointer" type="submit">
+                                        Save Person
+                                    </Button>
+                                </div>
+                            )}
                         </form>
                     </CardContent>
                 </Card>

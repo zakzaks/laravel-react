@@ -2,6 +2,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
+import { Eye, Pencil, PlusCircleIcon, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -11,23 +12,20 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({
-    person,
-}: {
-    person: [
-        {
-            id: number;
-            name: string;
-            phone: string;
-            address: string;
-            city: string;
-            state: string;
-            zip: string;
-            gender: string;
-            photo: string;
-        },
-    ];
-}) {
+interface Person {
+    id: number;
+    name: string;
+    phone: string;
+    address: string;
+    city: string;
+    state: string;
+    zip: string;
+    gender: string;
+    photo: string | null;
+    created_at: string;
+}
+
+export default function Index({ person }: { person: Person[] }) {
     const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
     const flashMessage = flash?.success || flash?.error;
     const [showAlert, setShowAlert] = useState(flashMessage ? true : false);
@@ -56,8 +54,8 @@ export default function Index({
                     </Alert>
                 )}
                 <div className="ml-auto">
-                    <Link as="button" href={route('person.create')} className="cursor-pointer rounded-lg bg-indigo-800 px-4 py-2 text-white">
-                        Create Person
+                    <Link as="button" href={route('person.create')} className="flex cursor-pointer rounded-lg bg-blue-800 px-4 py-2 text-white">
+                        <PlusCircleIcon className="mr-2" /> Create Person
                     </Link>
                 </div>
 
@@ -75,6 +73,7 @@ export default function Index({
                                 <th className="border p-4">Gender</th>
                                 <th className="border p-4">Photo</th>
                                 <th className="border p-4">Actions</th>
+                                <th className="border p-4">Created At</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,11 +88,30 @@ export default function Index({
                                     <td className="border px-4 py-2 text-center">{p.zip}</td>
                                     <td className="border px-4 py-2 text-center">{p.gender}</td>
                                     <td className="border px-4 py-2 text-center">
-                                        <img src={p.photo} alt={p.name} className="h-12 w-12 rounded-full" />
+                                        <img src={'storage/person/' + p.photo} alt={p?.name} className="h-12 w-12 rounded-full" />
                                     </td>
+                                    <td className="border px-4 py-2 text-center">{p.created_at}</td>
                                     <td className="border px-4 py-2 text-center">
-                                        <Link href={route('person.edit', p.id)} className="text-blue-500 hover:underline">
-                                            Edit
+                                        <Link
+                                            as="button"
+                                            href={route('person.show', p.id)}
+                                            className="cursor-pointer rounded-lg bg-blue-800 p-2 text-white"
+                                        >
+                                            <Eye size={21}></Eye>
+                                        </Link>
+                                        <Link
+                                            as="button"
+                                            href={route('person.edit', p.id)}
+                                            className="ms-2 cursor-pointer rounded-lg bg-blue-800 p-2 text-white"
+                                        >
+                                            <Pencil size={21}></Pencil>
+                                        </Link>
+                                        <Link
+                                            as="button"
+                                            href={route('person.destroy', p.id)}
+                                            className="ms-2 cursor-pointer rounded-lg bg-red-800 p-2 text-white"
+                                        >
+                                            <Trash size={21}></Trash>
                                         </Link>
                                     </td>
                                 </tr>
