@@ -88,7 +88,7 @@ export default function Index({ person }: { person: Person[] }) {
                                     <td className="border px-4 py-2 text-center">{p.zip}</td>
                                     <td className="border px-4 py-2 text-center">{p.gender}</td>
                                     <td className="border px-4 py-2 text-center">
-                                        <img src={'storage/person/' + p.photo} alt={p?.name} className="h-12 w-12 rounded-full" />
+                                        <img src={'storage/' + p.photo} alt={p?.name} className="h-12 w-12 rounded-full" />
                                     </td>
                                     <td className="border px-4 py-2 text-center">{p.created_at}</td>
                                     <td className="border px-4 py-2 text-center">

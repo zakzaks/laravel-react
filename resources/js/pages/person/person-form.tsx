@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
 
 export default function Index({ ...props }) {
     const { person, isView, isEdit } = props;
@@ -17,7 +18,19 @@ export default function Index({ ...props }) {
         },
     ];
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    type PersonForm = {
+        name: string;
+        phone: string;
+        birth: string;
+        address: string;
+        city: string;
+        state: string;
+        zip: string;
+        gender: string;
+        photo: File | null; // ONLY a File or null. Never a string.
+    };
+
+    const { data, setData, post, processing, errors, reset } = useForm<PersonForm>({
         name: person?.name || '',
         phone: person?.phone || '',
         birth: person?.birth || '',
@@ -26,24 +39,34 @@ export default function Index({ ...props }) {
         state: person?.state || '',
         zip: person?.zip || '',
         gender: person?.gender || '',
-        photo: person?.photo || (null as File | null),
+        photo: null,
     });
-
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setData('photo', e.target.files[0]);
-        }
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('person.store'), {
-            onSuccess: () => {
-                reset();
-                console.log('Person created successfully');
-            },
-            onError: (errors) => console.error('Error creating person', errors),
-        });
+
+        if (isEdit) {
+            post(route('person.update', person.id), {
+                forceFormData: true,
+                onSuccess: () => {
+                    reset();
+                },
+                onError: (errors) => console.error('Error updating person', errors),
+            });
+        } else {
+            post(route('person.store'), {
+                forceFormData: true,
+                onSuccess: () => {
+                    reset();
+                },
+                onError: (errors) => console.error('Error creating person', errors),
+            });
+        }
+    };
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const f = e.target.files?.[0] ?? null;
+        setData('photo', f); // File or null
     };
 
     return (
@@ -131,7 +154,7 @@ export default function Index({ ...props }) {
                                 <Input
                                     value={data.phone}
                                     onChange={(e) => setData('phone', e.target.value)}
-                                    type="number"
+                                    type="tel"
                                     id="phone"
                                     name="phone"
                                     tabIndex={6}
@@ -165,23 +188,24 @@ export default function Index({ ...props }) {
                                 />
                                 <InputError message={errors.gender} />
                             </div>
-                            {!isView ? (
+                            {!isView && (
                                 <div className="grid gap-4">
                                     <Label htmlFor="photo">Photo</Label>
                                     <Input onChange={handleFileUpload} type="file" id="photo" name="photo" tabIndex={8} />
                                     <InputError message={errors.photo} />
                                 </div>
-                            ) : (
+                            )}{' '}
+                            {(isView || isEdit) && person.photo && (
                                 <div className="grid gap-4">
                                     <Label htmlFor="photo">Photo</Label>
-                                    <img src={`/storage/person/${data.photo}`} alt={data.name} className="h-32 w-32 object-cover" />
+                                    <img src={`/storage/${person.photo}`} alt={person.name} className="h-32 w-32 object-cover" />
                                 </div>
                             )}
-
                             {!isView && (
                                 <div className="grid gap-4">
                                     <Button className="w-fit cursor-pointer" type="submit">
-                                        Save Person
+                                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                                        {processing ? (isEdit ? 'Updating... ' : 'Creating...') : isEdit ? 'Update' : 'Create'}
                                     </Button>
                                 </div>
                             )}

@@ -14,6 +14,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::resource('person', PersonController::class);
+    Route::match(['PUT', 'PATCH', 'POST'], '/person/{person}', [PersonController::class, 'update'])
+        ->name('person.update');
 });
 
 require __DIR__ . '/settings.php';

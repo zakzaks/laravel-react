@@ -22,15 +22,15 @@ class PersonFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'birth' => 'required|date',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'zip' => 'required|string|max:10',
-            'gender' => 'required|string|max:10',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
+            'birth' => ['required', 'date'],
+            'address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
+            'zip' => ['required', 'string', 'max:10'],
+            'gender' => ['required', 'string', 'max:10'],
+            'photo' => ['sometimes', 'nullable', 'file', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Inertia\Inertia;
 use App\Models\Person;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\PersonFormRequest;
 
@@ -91,15 +91,35 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
-        //
+        return Inertia::render('person/person-form', [
+            'person' => $person,
+            'isEdit' => true
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Person $person)
+    public function update(PersonFormRequest $request, Person $person)
     {
-        //
+        $data = $request->validated();
+        try {
+            if ($person) {
+
+                if ($request->file('photo')) {
+                    $photo = $request->file('photo');
+                    $photo = $photo->store('person', 'public');
+                    $data['photo'] = $photo;
+                }
+
+                $person->update($data);
+
+                return redirect()->route('person.index')->with('success', 'Person updated successfully.');
+            }
+            return redirect()->back()->with('error', 'Unable to update person. Please try again!');
+        } catch (\Exception $e) {
+            Log::error('Person update failed: ' . $e->getMessage());
+        }
     }
 
     /**
