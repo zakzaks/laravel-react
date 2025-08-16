@@ -127,6 +127,14 @@ class PersonController extends Controller
      */
     public function destroy(Person $person)
     {
-        //
+        try {
+            if ($person) {
+                $person->delete();
+                return redirect()->route('person.index')->with('success', 'Person deleted successfully.');
+            }
+            return redirect()->back()->with('error', 'Unable to delete person. Please try again!');
+        } catch (\Exception $e) {
+            Log::error('Person delete failed: ' . $e->getMessage());
+        }
     }
 }

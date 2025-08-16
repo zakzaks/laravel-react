@@ -1,7 +1,8 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Eye, Pencil, PlusCircleIcon, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -28,8 +29,9 @@ interface Person {
 export default function Index({ person }: { person: Person[] }) {
     const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
     const flashMessage = flash?.success || flash?.error;
-    const [showAlert, setShowAlert] = useState(flashMessage ? true : false);
+    const [showAlert, setShowAlert] = useState(flash?.success || flash?.error ? true : false);
 
+    console.log(showAlert ? true : false);
     useEffect(() => {
         if (flashMessage) {
             const timer = setTimeout(() => {
@@ -106,13 +108,18 @@ export default function Index({ person }: { person: Person[] }) {
                                         >
                                             <Pencil size={21}></Pencil>
                                         </Link>
-                                        <Link
-                                            as="button"
-                                            href={route('person.destroy', p.id)}
+                                        <Button
                                             className="ms-2 cursor-pointer rounded-lg bg-red-800 p-2 text-white"
+                                            onClick={() => {
+                                                if (confirm('Are you sure you want to delete this person?')) {
+                                                    router.delete(route('person.destroy', p.id), {
+                                                        preserveScroll: true,
+                                                    });
+                                                }
+                                            }}
                                         >
                                             <Trash size={21}></Trash>
-                                        </Link>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}
