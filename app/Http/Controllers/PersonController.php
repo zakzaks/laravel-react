@@ -130,7 +130,7 @@ class PersonController extends Controller
         try {
             if ($person) {
                 $person->delete();
-                return redirect()->route('person.index')->with('success', 'Person deleted successfully.');
+                return redirect()->back()->with('success', 'Person deleted successfully.');
             }
             return redirect()->back()->with('error', 'Unable to delete person. Please try again!');
         } catch (\Exception $e) {

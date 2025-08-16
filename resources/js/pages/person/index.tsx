@@ -31,12 +31,10 @@ export default function Index({ person }: { person: Person[] }) {
     const flashMessage = flash?.success || flash?.error;
     const [showAlert, setShowAlert] = useState(flash?.success || flash?.error ? true : false);
 
-    console.log(showAlert ? true : false);
+    console.log(showAlert, flashMessage, flash);
     useEffect(() => {
         if (flashMessage) {
-            const timer = setTimeout(() => {
-                setShowAlert(false);
-            }, 3000);
+            const timer = setTimeout(() => setShowAlert(false), 3000);
 
             return () => clearTimeout(timer);
         }
@@ -79,50 +77,58 @@ export default function Index({ person }: { person: Person[] }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {person.map((p, index) => (
-                                <tr key={index}>
-                                    <td className="border px-4 py-2 text-center">{index + 1}</td>
-                                    <td className="border px-4 py-2 text-center">{p.name}</td>
-                                    <td className="border px-4 py-2 text-center">{p.phone}</td>
-                                    <td className="border px-4 py-2 text-center">{p.address}</td>
-                                    <td className="border px-4 py-2 text-center">{p.city}</td>
-                                    <td className="border px-4 py-2 text-center">{p.state}</td>
-                                    <td className="border px-4 py-2 text-center">{p.zip}</td>
-                                    <td className="border px-4 py-2 text-center">{p.gender}</td>
-                                    <td className="border px-4 py-2 text-center">
-                                        <img src={'storage/' + p.photo} alt={p?.name} className="h-12 w-12 rounded-full" />
-                                    </td>
-                                    <td className="border px-4 py-2 text-center">{p.created_at}</td>
-                                    <td className="border px-4 py-2 text-center">
-                                        <Link
-                                            as="button"
-                                            href={route('person.show', p.id)}
-                                            className="cursor-pointer rounded-lg bg-blue-800 p-2 text-white"
-                                        >
-                                            <Eye size={21}></Eye>
-                                        </Link>
-                                        <Link
-                                            as="button"
-                                            href={route('person.edit', p.id)}
-                                            className="ms-2 cursor-pointer rounded-lg bg-blue-800 p-2 text-white"
-                                        >
-                                            <Pencil size={21}></Pencil>
-                                        </Link>
-                                        <Button
-                                            className="ms-2 cursor-pointer rounded-lg bg-red-800 p-2 text-white"
-                                            onClick={() => {
-                                                if (confirm('Are you sure you want to delete this person?')) {
-                                                    router.delete(route('person.destroy', p.id), {
-                                                        preserveScroll: true,
-                                                    });
-                                                }
-                                            }}
-                                        >
-                                            <Trash size={21}></Trash>
-                                        </Button>
+                            {person.length === 0 ? (
+                                <tr>
+                                    <td colSpan={11} className="border px-4 py-2 text-center font-bold">
+                                        No person found
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                person.map((p, index) => (
+                                    <tr key={index}>
+                                        <td className="border px-4 py-2 text-center">{index + 1}</td>
+                                        <td className="border px-4 py-2 text-center">{p.name}</td>
+                                        <td className="border px-4 py-2 text-center">{p.phone}</td>
+                                        <td className="border px-4 py-2 text-center">{p.address}</td>
+                                        <td className="border px-4 py-2 text-center">{p.city}</td>
+                                        <td className="border px-4 py-2 text-center">{p.state}</td>
+                                        <td className="border px-4 py-2 text-center">{p.zip}</td>
+                                        <td className="border px-4 py-2 text-center">{p.gender}</td>
+                                        <td className="border px-4 py-2 text-center">
+                                            <img src={'storage/' + p.photo} alt={p?.name} className="h-12 w-12 rounded-full" />
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">{p.created_at}</td>
+                                        <td className="border px-4 py-2 text-center">
+                                            <Link
+                                                as="button"
+                                                href={route('person.show', p.id)}
+                                                className="cursor-pointer rounded-lg bg-blue-800 p-2 text-white"
+                                            >
+                                                <Eye size={21}></Eye>
+                                            </Link>
+                                            <Link
+                                                as="button"
+                                                href={route('person.edit', p.id)}
+                                                className="ms-2 cursor-pointer rounded-lg bg-blue-800 p-2 text-white"
+                                            >
+                                                <Pencil size={21}></Pencil>
+                                            </Link>
+                                            <Button
+                                                className="ms-2 cursor-pointer rounded-lg bg-red-800 p-2 text-white"
+                                                onClick={() => {
+                                                    if (confirm('Are you sure you want to delete this person?')) {
+                                                        router.delete(route('person.destroy', p.id), {
+                                                            preserveScroll: true,
+                                                        });
+                                                    }
+                                                }}
+                                            >
+                                                <Trash size={21}></Trash>
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
