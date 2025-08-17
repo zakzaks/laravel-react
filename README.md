@@ -1,6 +1,6 @@
 <h2>Laravel - React Monolith</h2>
 
-This app built using Laravel 12 with React starter kit. This app is about managing Data Person like create, read, update, and delete (CRUD).
+This app built using Laravel 12 with React starter kit. This app is about managing Data Person with complete functionalities.
 
 <h3>How to install:</h3>
 
@@ -9,3 +9,8 @@ This app built using Laravel 12 with React starter kit. This app is about managi
 - generate key using `php artisan key:generate`
 - running app using `composer run dev`
 
+<h3>Functionalities</h3>
+- Create, read, update, delete data person
+- Validation using FormValidation (Laravel)
+- Upload images and it's validation logic like remove old files after update or delete
+- Alert for every success | fail process
