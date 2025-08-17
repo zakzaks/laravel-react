@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Eye, Pencil, PlusCircleIcon, Trash } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { CheckCircle2Icon, Eye, Pencil, PlusCircleIcon, Trash } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,17 +27,20 @@ interface Person {
 }
 
 export default function Index({ person }: { person: Person[] }) {
-    const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
-    const flashMessage = flash?.success || flash?.error;
-    const [showAlert, setShowAlert] = useState(flash?.success || flash?.error ? true : false);
+    type Flash = { success?: string; error?: string };
 
-    console.log(showAlert, flashMessage, flash);
+    const { flash } = usePage<{ flash?: Flash }>().props;
+
+    const flashMessage = useMemo(() => flash?.success ?? flash?.error ?? '', [flash?.success, flash?.error]);
+
+    const [showAlert, setShowAlert] = useState(false);
+
     useEffect(() => {
-        if (flashMessage) {
-            const timer = setTimeout(() => setShowAlert(false), 3000);
+        if (!flashMessage) return;
 
-            return () => clearTimeout(timer);
-        }
+        setShowAlert(true);
+        const timer = window.setTimeout(() => setShowAlert(false), 5000);
+        return () => window.clearTimeout(timer);
     }, [flashMessage]);
 
     return (
@@ -45,11 +48,9 @@ export default function Index({ person }: { person: Person[] }) {
             <Head title="Manage Person" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 {showAlert && flashMessage && (
-                    <Alert
-                        variant={'default'}
-                        className={`${flash?.success ? 'bg-green-800' : flash?.error ? 'bg-red-800' : ''} ml-auto max-w-md text-white`}
-                    >
-                        <AlertTitle className="font-bold">{flash?.success ? 'Success' : 'Error'}</AlertTitle>
+                    <Alert className={`bg-${flash?.success ? 'green' : 'red'}-800`}>
+                        <CheckCircle2Icon className={`bg-${flash?.success ? 'green' : 'red'}-400`} />
+                        <AlertTitle className="text-white">Success! Your changes have been saved</AlertTitle>
                         <AlertDescription className="text-white">{flashMessage}</AlertDescription>
                     </Alert>
                 )}
