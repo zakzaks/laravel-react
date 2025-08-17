@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -177,15 +178,21 @@ export default function Index({ ...props }) {
                             </div>
                             <div className="grid gap-4">
                                 <Label htmlFor="gender">Gender</Label>
-                                <Input
-                                    value={data.gender}
-                                    onChange={(e) => setData('gender', e.target.value)}
-                                    type="text"
-                                    id="gender"
-                                    name="gender"
-                                    tabIndex={8}
-                                    disabled={isView || processing}
-                                />
+                                <Select value={data.gender} onValueChange={(value) => setData('gender', value)} disabled={isView || processing}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select a gender" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Gender</SelectLabel>
+                                            <SelectItem value="male">Male</SelectItem>
+                                            <SelectItem value="female">Female</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                {/* hidden input so HTML form submission still carries the value */}
+                                <input type="hidden" name="gender" value={data.gender} />
                                 <InputError message={errors.gender} />
                             </div>
                             {!isView && (
