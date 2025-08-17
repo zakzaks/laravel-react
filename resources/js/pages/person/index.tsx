@@ -43,6 +43,8 @@ export default function Index({ person }: { person: Person[] }) {
         return () => window.clearTimeout(timer);
     }, [flashMessage]);
 
+    console.log(person);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manage Person" />
@@ -50,7 +52,7 @@ export default function Index({ person }: { person: Person[] }) {
                 {showAlert && flashMessage && (
                     <Alert className={`bg-${flash?.success ? 'green' : 'red'}-800`}>
                         <CheckCircle2Icon className={`bg-${flash?.success ? 'green' : 'red'}-400`} />
-                        <AlertTitle className="text-white">Success! Your changes have been saved</AlertTitle>
+                        <AlertTitle className="text-white">Success!</AlertTitle>
                         <AlertDescription className="text-white">{flashMessage}</AlertDescription>
                     </Alert>
                 )}

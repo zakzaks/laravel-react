@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Inertia\Inertia;
 use App\Models\Person;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\PersonFormRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class PersonController extends Controller
 {
@@ -45,33 +47,29 @@ class PersonController extends Controller
      */
     public function store(PersonFormRequest $request)
     {
+        /** @var Request $request */
         try {
-            $photo = null;
+            $data = $request->validated();
 
-            if ($request->file('photo')) {
-                $photo  = $request->file('photo');
-                $photoOriginalName = $photo->getClientOriginalName();
-                $photo = $photo->store('person', 'public');
+            if ($request->hasFile('photo')) {
+                /** @var UploadedFile $file */
+                $file = $request->file('photo');
+                $data['photo'] = $file->store('person', 'public');
+            } else {
+                // Ensure key exists as null if your DB allows nulls
+                $data['photo'] = $data['photo'] ?? null;
             }
 
-            $person = Person::create([
-                'name' => $request->name,
-                'address' => $request->address,
-                'city' => $request->city,
-                'state' => $request->state,
-                'zip' => $request->zip,
-                'phone' => $request->phone,
-                'gender' => $request->gender,
-                'birth' => $request->birth,
-                'photo' => $photoOriginalName ?? null,
-            ]);
+            $person = Person::create($data);
+
             if ($person) {
                 return redirect()->route('person.index')->with('success', 'Person created successfully.');
-            } else {
-                return redirect()->back()->withErrors('error', 'Failed to create person.');
             }
+
+            return redirect()->back()->with('error', 'Failed to create person.');
         } catch (\Exception $e) {
             Log::error('Person creation failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An unexpected error occurred while creating the person.');
         }
     }
 
@@ -102,23 +100,26 @@ class PersonController extends Controller
      */
     public function update(PersonFormRequest $request, Person $person)
     {
+        /** @var Request $request */
         $data = $request->validated();
         try {
             if ($person) {
-
-                if ($request->file('photo')) {
-                    $photo = $request->file('photo');
-                    $photo = $photo->store('person', 'public');
-                    $data['photo'] = $photo;
+                if ($request->hasFile('photo')) {
+                    // Delete old photo if it exists
+                    if ($person->photo) {
+                        Storage::disk('public')->delete($person->photo);
+                    }
+                    /** @var UploadedFile $file */
+                    $file = $request->file('photo');
+                    $data['photo'] = $file->store('person', 'public');
                 }
-
                 $person->update($data);
-
                 return redirect()->route('person.index')->with('success', 'Person updated successfully.');
             }
             return redirect()->back()->with('error', 'Unable to update person. Please try again!');
         } catch (\Exception $e) {
             Log::error('Person update failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An unexpected error occurred while updating the person.');
         }
     }
 
@@ -129,12 +130,16 @@ class PersonController extends Controller
     {
         try {
             if ($person) {
+                if ($person->photo) {
+                    Storage::disk('public')->delete($person->photo);
+                }
                 $person->delete();
                 return redirect()->back()->with('success', 'Person deleted successfully.');
             }
             return redirect()->back()->with('error', 'Unable to delete person. Please try again!');
         } catch (\Exception $e) {
             Log::error('Person delete failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An unexpected error occurred while deleting the person.');
         }
     }
 }
