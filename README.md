@@ -9,7 +9,8 @@ This app built using Laravel 12 with React starter kit. This app is about managi
 - generate key using `php artisan key:generate`
 - running app using `composer run dev`
 
-<h3>Functionalities</h3>
+<h3>Features</h3>
+
 - Create, read, update, delete data person
 - Validation using FormValidation (Laravel)
 - Upload images and it's validation logic like remove old files after update or delete
