@@ -11,6 +11,7 @@ This app built using Laravel 12 with React starter kit. This app is about managi
 
 <h3>Features</h3>
 
+- Responsive UI (Web & Mobile)
 - Create, read, update, delete data person
 - Validation using FormValidation (Laravel)
 - Upload images and it's validation logic like remove old files after update or delete
