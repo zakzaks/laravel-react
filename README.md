@@ -2,6 +2,13 @@
 
 This app built using Laravel 12 with React starter kit. This app is about managing Data Person with complete functionalities.
 
+<h3>Requirements</h3>
+
+- Minimum PHP 8.2 (recommended)
+- <a href="https://getcomposer.org/">Composer</a>
+- <a href="https://nodejs.org/en">NodeJS 22</a> (recommended) 
+
+
 <h3>How to install:</h3>
 
 - `composer install`
