@@ -112,6 +112,8 @@ class PersonController extends Controller
                     /** @var UploadedFile $file */
                     $file = $request->file('photo');
                     $data['photo'] = $file->store('person', 'public');
+                } else {
+                    $data['photo'] = $person->photo;
                 }
                 $person->update($data);
                 return redirect()->route('person.index')->with('success', 'Person updated successfully.');
