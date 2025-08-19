@@ -22,4 +22,4 @@ This app built using Laravel 12 with React starter kit. This app is about managi
 - Create, read, update, delete data person
 - Validation using FormValidation (Laravel)
 - Upload images and it's validation logic like remove old files after update or delete
-- Alert for every success | fail process
+- Toast alert for every success | fail process
