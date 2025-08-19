@@ -6,7 +6,7 @@ This app built using Laravel 12 with React starter kit. This app is about managi
 
 - Minimum PHP 8.2 (recommended)
 - <a href="https://getcomposer.org/">Composer</a>
-- <a href="https://nodejs.org/en">NodeJS 22</a> (recommended) 
+- <a href="https://nodejs.org/en">NodeJS v22</a> (recommended) 
 
 
 <h3>How to install:</h3>
